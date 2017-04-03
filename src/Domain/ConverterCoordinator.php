@@ -18,7 +18,10 @@ interface ConverterCoordinator {
     /**
      * 
      * @param LocalConvertionRequest $request
+     * @param ConverterConfiguration $configuration
      * @return PromiseInterface
      */
-    public function requestLocalConversion(LocalConvertionRequest $request);
+    public function requestLocalConversion(
+            LocalConvertionRequest $request, 
+            ConverterConfiguration $configuration = null);
 }

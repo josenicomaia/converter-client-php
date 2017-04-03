@@ -24,8 +24,17 @@ class Converter {
      */
     private $converterCoordinator;
     
-    public function __construct(GuzzleConverterCoordinator $converterCoordinator) {
+    /**
+     * 
+     * @param ConverterConfiguration $configuration
+     */
+    private $configuration;
+
+    public function __construct(
+            GuzzleConverterCoordinator $converterCoordinator,
+            ConverterConfiguration $configuration = null) {
         $this->converterCoordinator = $converterCoordinator;
+        $this->configuration = $configuration;
     }
     
     /**
@@ -35,8 +44,11 @@ class Converter {
      */
     public function requestLocalConversion(LocalConvertionRequest $request) {
         $promise = new Promise();
+        $coordinatorPromise = $this->converterCoordinator->requestLocalConversion(
+                $request, 
+                $this->configuration);
         
-        $this->converterCoordinator->requestLocalConversion($request)->then(function ($value) use ($promise) {
+        $coordinatorPromise->then(function ($value) use ($promise) {
             $requestResult = new ConversionRequestResult(
                     $value['hashArquivo'], 
                     $value['pathResultadoArquivo'], 
