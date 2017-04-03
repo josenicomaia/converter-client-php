@@ -8,7 +8,6 @@
 
 namespace PRODesign\Converter\Client\PHP\Domain;
 
-use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use PRODesign\Converter\Client\PHP\Infrastructure\GuzzleConverterCoordinator;
 
@@ -43,20 +42,15 @@ class Converter {
      * @return PromiseInterface
      */
     public function requestLocalConversion(LocalConvertionRequest $request) {
-        $promise = new Promise();
-        $coordinatorPromise = $this->converterCoordinator->requestLocalConversion(
+        $promise = $this->converterCoordinator->requestLocalConversion(
                 $request, 
                 $this->configuration);
         
-        $coordinatorPromise->then(function ($value) use ($promise) {
-            $requestResult = new ConversionRequestResult(
+        $promise->then(function ($value) {
+            return new ConversionRequestResult(
                     $value['hashArquivo'], 
                     $value['pathResultadoArquivo'], 
                     $value['urlResultadoArquivo']);
-            
-            $promise->resolve($requestResult);
-        }, function ($reason) use ($promise) {
-            $promise->reject($reason);
         });
         
         return $promise;

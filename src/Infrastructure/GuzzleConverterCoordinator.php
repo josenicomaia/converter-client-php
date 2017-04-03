@@ -8,7 +8,6 @@
 
 namespace PRODesign\Converter\Client\PHP\Infrastructure;
 
-use GuzzleHttp\Promise\Promise;
 use PRODesign\Converter\Client\PHP\Domain\ConverterConfiguration;
 use PRODesign\Converter\Client\PHP\Domain\ConverterCoordinator;
 use PRODesign\Converter\Client\PHP\Domain\LocalConvertionRequest;
@@ -35,16 +34,13 @@ class GuzzleConverterCoordinator implements ConverterCoordinator {
             ConverterConfiguration $configuration = null) {
         $client = $this->guzzleFactory->createClient($configuration);
         $options = $this->generateOptionsForLocalRequest($request);
-        $requestPromise = $client->requestAsync('POST', '/converter', $options);
-        $formatedRequestPromise = new Promise();
+        $promise = $client->requestAsync('POST', '/converter', $options);
         
-        $requestPromise->then(function ($value) use ($formatedRequestPromise) {
-            $formatedRequestPromise->resolve(json_decode($value, true));
-        }, function ($reason) use ($formatedRequestPromise) {
-            $formatedRequestPromise->reject($reason);
+        $promise->then(function ($value) {
+            return json_decode($value, true);
         });
         
-        return $formatedRequestPromise;
+        return $promise;
     }
     
     /**

@@ -33,7 +33,7 @@ class GuzzleFactory {
      * @return Client
      */
     public function createClient(ConverterConfiguration $configuration = null) {
-        $mergedConfiguration = $this->mergeConfiguration($mergedConfiguration);
+        $mergedConfiguration = $this->mergeConfiguration($configuration);
         
         return new Client([
             'base_uri' => $mergedConfiguration->serviceUrl(),
@@ -42,6 +42,11 @@ class GuzzleFactory {
         ]);
     }
     
+    /**
+     * 
+     * @param ConverterConfiguration $configuration
+     * @return ConverterConfiguration
+     */
     private function mergeConfiguration(ConverterConfiguration $configuration = null) {
         return ($configuration)? 
                 $this->converterConfiguration->merge($configuration) 

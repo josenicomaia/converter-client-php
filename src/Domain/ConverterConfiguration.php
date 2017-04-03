@@ -45,17 +45,21 @@ class ConverterConfiguration {
     }
     
     public function merge(ConverterConfiguration $configuration) {
+        $newConfiguration = new ConverterConfiguration();
+        
         if($configuration->serviceUrl() != null) {
-            $this->serviceUrl = $configuration->serviceUrl();
+            $newConfiguration->serviceUrl = $configuration->serviceUrl();
         }
         
         if($configuration->connectTimeout() != null) {
-            $this->connectTimeout = $configuration->connectTimeout();
+            $newConfiguration->connectTimeout = $configuration->connectTimeout();
         }
         
         if($configuration->readTimeout() != null) {
-            $this->readTimeout = $configuration->readTimeout();
+            $newConfiguration->readTimeout = $configuration->readTimeout();
         }
+        
+        return $newConfiguration;
     }
     
     public function serviceUrl() {
