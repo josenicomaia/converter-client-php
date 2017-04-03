@@ -8,24 +8,23 @@
         }
     ],
     "repositories": [
-        { "type": "composer", "url": "http://composer.pd.art.br/" }
+        { "type": "composer", "url": "https://composer1.websiteseguro.com" }
     ],
     "require": {
         "php": ">=5.5.9",
         "guzzlehttp/guzzle": "6.*",
         "ramsey/uuid": "^3.4",
-        "gerritdrost/phenum": "^1.0"
+        "gerritdrost/phenum": "^1.0",
+        "beberlei/assert": "^2.6",
+        "guzzlehttp/promises": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.4"
     },
     "autoload": {
         "psr-4": {
-            "PRODesign\\ConversorClientePHP\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+            "PRODesign\\Converter\\Client\\PHP\\": "src/"
+        }
     },
     "autoload-dev": {
         "classmap": [
