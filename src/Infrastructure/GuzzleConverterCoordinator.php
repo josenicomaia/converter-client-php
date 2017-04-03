@@ -37,7 +37,7 @@ class GuzzleConverterCoordinator implements ConverterCoordinator {
         $promise = $client->requestAsync('POST', '/converter', $options);
         
         return $promise->then(function (ResponseInterface $value) {
-            return GuzzleHttp\json_decode($value->getBody(), true);
+            return \GuzzleHttp\json_decode($value->getBody(), true);
         });
     }
     
