@@ -46,13 +46,11 @@ class Converter {
                 $request, 
                 $this->configuration);
         
-        $promise->then(function ($value) {
+        return $promise->then(function (array $value) {
             return new ConversionRequestResult(
                     $value['hashArquivo'], 
                     $value['pathResultadoArquivo'], 
                     $value['urlResultadoArquivo']);
         });
-        
-        return $promise;
     }
 }

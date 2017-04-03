@@ -11,6 +11,7 @@ namespace PRODesign\Converter\Client\PHP\Infrastructure;
 use PRODesign\Converter\Client\PHP\Domain\ConverterConfiguration;
 use PRODesign\Converter\Client\PHP\Domain\ConverterCoordinator;
 use PRODesign\Converter\Client\PHP\Domain\LocalConvertionRequest;
+use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\json_decode;
 
 /**
@@ -36,11 +37,9 @@ class GuzzleConverterCoordinator implements ConverterCoordinator {
         $options = $this->generateOptionsForLocalRequest($request);
         $promise = $client->requestAsync('POST', '/converter', $options);
         
-        $promise->then(function ($value) {
-            return json_decode($value, true);
+        return $promise->then(function (ResponseInterface $value) {
+            return json_decode($value->getBody(), true);
         });
-        
-        return $promise;
     }
     
     /**
