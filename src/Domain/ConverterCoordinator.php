@@ -1,27 +1,20 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace PRODesign\Converter\Client\PHP\Domain;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use PRODesign\Converter\Client\PHP\Domain\Request\ConversionRequest;
+use PRODesign\Converter\Client\PHP\Domain\Request\InvalidConversionRequest;
 
-/**
- *
- * @author José Nicodemos Maia Neto <jose at nicomaia.com.br>
- */
 interface ConverterCoordinator {
     /**
      * 
-     * @param LocalConvertionRequest $request
-     * @param ConverterConfiguration $configuration
+     * @param ConversionRequest $request
+     * @param ConverterConfiguration|null $configuration
      * @return PromiseInterface
+     * @throws InvalidConversionRequest
      */
-    public function requestLocalConversion(
-            LocalConvertionRequest $request, 
+    public function requestConversion(
+            ConversionRequest $request, 
             ConverterConfiguration $configuration = null);
 }

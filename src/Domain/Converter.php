@@ -1,21 +1,12 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace PRODesign\Converter\Client\PHP\Domain;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use PRODesign\Converter\Client\PHP\Domain\Request\ConversionRequest;
+use PRODesign\Converter\Client\PHP\Domain\Request\InvalidConversionRequest;
 use PRODesign\Converter\Client\PHP\Infrastructure\GuzzleConverterCoordinator;
 
-/**
- * Description of Converter
- *
- * @author José Nicodemos Maia Neto <jose at nicomaia.com.br>
- */
 class Converter {
     /**
      *
@@ -25,10 +16,15 @@ class Converter {
     
     /**
      * 
-     * @param ConverterConfiguration $configuration
+     * @param ConverterConfiguration|null $configuration
      */
     private $configuration;
 
+    /**
+     * 
+     * @param GuzzleConverterCoordinator $converterCoordinator
+     * @param ConverterConfiguration|null $configuration
+     */
     public function __construct(
             GuzzleConverterCoordinator $converterCoordinator,
             ConverterConfiguration $configuration = null) {
@@ -38,11 +34,12 @@ class Converter {
     
     /**
      * 
-     * @param LocalConvertionRequest $request
+     * @param ConversionRequest $request
      * @return PromiseInterface
+     * @throws InvalidConversionRequest
      */
-    public function requestLocalConversion(LocalConvertionRequest $request) {
-        $promise = $this->converterCoordinator->requestLocalConversion(
+    public function requestConversion(ConversionRequest $request) {
+        $promise = $this->converterCoordinator->requestConversion(
                 $request, 
                 $this->configuration);
         

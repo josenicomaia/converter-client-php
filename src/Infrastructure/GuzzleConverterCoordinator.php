@@ -1,23 +1,15 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace PRODesign\Converter\Client\PHP\Infrastructure;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use PRODesign\Converter\Client\PHP\Domain\ConverterConfiguration;
 use PRODesign\Converter\Client\PHP\Domain\ConverterCoordinator;
-use PRODesign\Converter\Client\PHP\Domain\LocalConvertionRequest;
+use PRODesign\Converter\Client\PHP\Domain\Request\ConversionRequest;
+use PRODesign\Converter\Client\PHP\Domain\Request\InvalidConversionRequest;
+use PRODesign\Converter\Client\PHP\Domain\Request\LocalConversionRequest;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Description of GuzzleConverterCoordinator
- *
- * @author José Nicodemos Maia Neto <jose at nicomaia.com.br>
- */
 class GuzzleConverterCoordinator implements ConverterCoordinator {
     /**
      *
@@ -25,15 +17,26 @@ class GuzzleConverterCoordinator implements ConverterCoordinator {
      */
     private $guzzleFactory;
     
+    /**
+     * 
+     * @param GuzzleFactory $guzzleFactory
+     */
     public function __construct(GuzzleFactory $guzzleFactory) {
         $this->guzzleFactory = $guzzleFactory;
     }
     
-    public function requestLocalConversion(
-            LocalConvertionRequest $request, 
+    /**
+     * 
+     * @param ConversionRequest $request
+     * @param ConverterConfiguration|null $configuration
+     * @return PromiseInterface
+     * @throws InvalidConversionRequest
+     */
+    public function requestConversion(
+            ConversionRequest $request, 
             ConverterConfiguration $configuration = null) {
         $client = $this->guzzleFactory->createClient($configuration);
-        $options = $this->generateOptionsForLocalRequest($request);
+        $options = $this->generateOptions($request);
         $promise = $client->requestAsync('POST', '/converter', $options);
         
         return $promise->then(function (ResponseInterface $value) {
@@ -43,26 +46,29 @@ class GuzzleConverterCoordinator implements ConverterCoordinator {
     
     /**
      * 
-     * @param LocalConvertionRequest $request
+     * @param ConversionRequest $request
+     * @return array
+     * @throws InvalidConversionRequest
+     */
+    public function generateOptions(ConversionRequest $request) {
+        if($request instanceof LocalConversionRequest) {
+            return $this->generateOptionsForLocalRequest($request);
+        }
+        
+        throw new InvalidConversionRequest();
+    }
+    
+    /**
+     * 
+     * @param LocalConversionRequest $request
      * @return array
      */
-    private function generateOptionsForLocalRequest(LocalConvertionRequest $request) {
-        return [
-            'multipart' => [
-                [
-                    'name' => 'arquivo',
-                    'contents' => fopen($request->filePath(), 'rb')
-                ], [
-                    'name' => 'resolucao',
-                    'contents' => $request->resolution()
-                ], [
-                    'name' => 'qualidade',
-                    'contents' => $request->quality()
-                ], [
-                    'name' => 'png8',
-                    'contents' => ($request->png8())? 'true' : 'false'
-                ]
-            ]
-        ];
+    public function generateOptionsForLocalRequest(LocalConversionRequest $request) {
+        return GuzzleOptionsBuilder::builder()
+                ->attachFile('target', $request->target())
+                ->attachParameter('resolution', $request->resolution()->__toString())
+                ->attachParameter('quality', $request->quality()->__toString())
+                ->attachParameter('png8', $request->toPng8())
+                ->build();
     }
 }

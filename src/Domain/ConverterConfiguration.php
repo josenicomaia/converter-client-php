@@ -1,18 +1,7 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace PRODesign\Converter\Client\PHP\Domain;
 
-/**
- * Description of ConverterConfiguration
- *
- * @author José Nicodemos Maia Neto <jose at nicomaia.com.br>
- */
 class ConverterConfiguration {
     /**
      * URL for the converter endpoint
@@ -36,7 +25,7 @@ class ConverterConfiguration {
     private $readTimeout;
     
     public function __construct(
-            $serviceUrl = null, 
+            $serviceUrl = 'http://localhost', 
             $connectTimeout = 1000, 
             $readTimeout = 240000) {
         $this->serviceUrl = $serviceUrl;
